@@ -1,0 +1,8 @@
+#%RAML 1.0 DocumentationItem
+title: Authentication
+content: |
+  
+  To access the Salesforce Accounts SAPI, you need to authenticate using ClientID and Client Secret. Every request must send ClientId and Secret in the header.
+  ```bash
+  curl POST 'https://acme.com/api/v1/accounts'  -H 'client_id: 1' -H 'client_secret: 2'
+  ```
