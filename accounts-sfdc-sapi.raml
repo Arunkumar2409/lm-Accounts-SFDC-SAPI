@@ -78,11 +78,15 @@ uses:
             type: coreLib.postSuccess
             example: !include /examples/updateAccountSuccessResponse.raml
     delete:
+      description: 
       displayName: Deletes an account object from Salesforce
       is: [coreLib.trackable, coreLib.clientIdRequired]
       responses:
         200:
-          description: 200 Res
+          description: 200 Response
+          headers:
+            Content-Type:
+              description: string
           body:
             type: coreLib.postSuccess
             example: !include /examples/deleteAccountSuccessResponse.raml
