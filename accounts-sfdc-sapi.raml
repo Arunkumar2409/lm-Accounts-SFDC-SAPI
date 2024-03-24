@@ -33,7 +33,7 @@ uses:
         description: 201 response
         headers:
           Content-Type:
-            description: string
+            description: content-type
         body:
           type: coreLib.postSuccess
           example: !include /examples/createAccountSuccessResponse.raml
@@ -55,7 +55,7 @@ uses:
           description: 200 Response
           headers:
             Content-Type:
-              description: string
+              description: content-type
           body:
             application/json:
               type: accountCDMLib.accountType
@@ -73,7 +73,7 @@ uses:
           description: 200 Response
           headers:
             Content-Type:
-              description: 
+              description: content-type
           body:
             type: coreLib.postSuccess
             example: !include /examples/updateAccountSuccessResponse.raml
@@ -82,6 +82,7 @@ uses:
       is: [coreLib.trackable, coreLib.clientIdRequired]
       responses:
         200:
+          description: 200 Res
           body:
             type: coreLib.postSuccess
             example: !include /examples/deleteAccountSuccessResponse.raml
