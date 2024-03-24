@@ -14,7 +14,7 @@ uses:
 
 /accounts:
   securedBy:
-    - coreLib.
+    - coreLib.token
   post:
     displayName: enter data
     is: [coreLib.trackable, coreLib.clientIdRequired]
@@ -30,6 +30,9 @@ uses:
         example: !include /examples/createAccountRequest.raml
     responses:
       201:
+        description: 201 response
+        headers:
+          
         body:
           type: coreLib.postSuccess
           example: !include /examples/createAccountSuccessResponse.raml
