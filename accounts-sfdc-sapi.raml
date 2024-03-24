@@ -71,7 +71,9 @@ uses:
       responses:
         200:
           description: 200 Response
-          
+          headers:
+            Content-Type:
+              description: 
           body:
             type: coreLib.postSuccess
             example: !include /examples/updateAccountSuccessResponse.raml
