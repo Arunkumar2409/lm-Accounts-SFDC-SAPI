@@ -33,7 +33,7 @@ uses:
         description: 201 response
         headers:
           Content-Type:
-            description: content-type
+            description: string
         body:
           type: coreLib.postSuccess
           example: !include /examples/createAccountSuccessResponse.raml
@@ -54,12 +54,14 @@ uses:
         200:
           description: 200 Response
           headers:
-            
+            Content-Type:
+              description: string
           body:
             application/json:
               type: accountCDMLib.accountType
               example: !include /examples/retrieveAccountResponse.raml
     put:
+      
       displayName: Updates an account object in Salesforce
       is: [coreLib.trackable, coreLib.clientIdRequired]
       body:
