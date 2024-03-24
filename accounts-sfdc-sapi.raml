@@ -47,8 +47,8 @@ uses:
         description: Account Id to be retrived, updated or deleted.
         example: 0019000000DmehK
     get:
-      description: retrive data
-      displayName: Retrieve an account object from Salesforce
+      description: Retrieve an account object from Salesforce
+      displayName: Retrieve
       is: [coreLib.trackable, coreLib.clientIdRequired]
       responses:
         200:
@@ -61,8 +61,8 @@ uses:
               type: accountCDMLib.accountType
               example: !include /examples/retrieveAccountResponse.raml
     put:
-      
-      displayName: Updates an account object in Salesforce
+      description: Updates an account object in Salesforce
+      displayName: Update Data
       is: [coreLib.trackable, coreLib.clientIdRequired]
       body:
         application/json:
