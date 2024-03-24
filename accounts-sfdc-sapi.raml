@@ -38,6 +38,8 @@ uses:
           type: coreLib.postSuccess
           example: !include /examples/createAccountSuccessResponse.raml
   /{accountid}:
+    securedBy:
+      - coreLib.token
     uriParameters:
       accountid:
         type: string
@@ -50,6 +52,9 @@ uses:
       is: [coreLib.trackable, coreLib.clientIdRequired]
       responses:
         200:
+          description: 200 Response
+          headers:
+            
           body:
             application/json:
               type: accountCDMLib.accountType
