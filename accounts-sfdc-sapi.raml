@@ -39,12 +39,13 @@ uses:
           example: !include /examples/createAccountSuccessResponse.raml
   /{accountid}:
     uriParameters:
-      account_id:
+      accountid:
         type: string
         displayName: Account ID
         description: Account Id to be retrived, updated or deleted.
         example: 0019000000DmehK
     get:
+      
       displayName: Retrieve an account object from Salesforce
       is: [coreLib.trackable, coreLib.clientIdRequired]
       responses:
