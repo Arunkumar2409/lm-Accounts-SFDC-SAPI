@@ -21,7 +21,12 @@ uses:
     description: Create new account in Salesforce
     body:
       application/json:
-        type: accountCDMLib.accountType[]
+        type: accountCDMLib.accountType
+        properties:
+          name: 
+            required: true
+          email:
+            required: true
         example: !include /examples/createAccountRequest.raml
     responses:
       201:
