@@ -1,0 +1,14 @@
+%dw 2.0
+
+type auto_a51c4eaa_bdf9_4091_9890_aaa4985964a3_Output_Payload = Array<Account>
+type Account = {|
+  accountid__c?: String {"typeId": "accountid__c"}, 
+  Email__c?: String {"typeId": "Email__c"}, 
+  Fax?: String {"typeId": "Fax"}, 
+  Name?: String {"typeId": "Name"}, 
+  Phone?: String {"typeId": "Phone"}
+|} {"label": "Account",
+"typeId": "Account"}
+
+
+

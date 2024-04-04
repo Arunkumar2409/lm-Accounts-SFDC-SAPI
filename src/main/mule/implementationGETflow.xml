@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="impl-get:\accounts\(accountid):accounts-sfdc-sapi-config" doc:id="a51c4eaa-bdf9-4091-9890-aaa4985964a3" >
+		<logger level="INFO" doc:name="flow start Logger" doc:id="53a1ef90-0cff-4088-a4a8-aecdd30fa7bf" message='#["GET FLOW STARTED"]'/>
+		<ee:transform doc:name="set Variables" doc:id="28f9baef-2af1-4e47-bb4b-ffbd6940b650" >
+			<ee:variables >
+				<ee:set-variable variableName="accountid" ><![CDATA[attributes.uriParams.'accountid']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="a56cb5bc-5b9e-40cf-9ec2-2d6d3971423b" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[select Name,Phone,Fax,Email__c,accountid__c,BillingAddress from Account where Id =':accountid__c']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	accountid__c : vars.accountid
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="responseMessage" doc:id="96412bb0-8020-4621-9fe9-8ddd2b6f1a4d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

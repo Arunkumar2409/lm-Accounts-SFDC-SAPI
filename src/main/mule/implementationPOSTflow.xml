@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="impl-post:\accounts:application\json:accounts-sfdc-sapi-config" doc:id="47b0a5b8-7a3f-4290-86a0-e2d237dc49f6" >
+		<logger level="INFO" doc:name="flow start Logger" doc:id="f64d62f1-7bee-4f85-866d-8ac291c130b2" message='#["POST FLOW STARTED"]'/>
+		<ee:transform doc:name="MappingResponse" doc:id="a4273d68-29ce-4268-9b78-56450d239d3a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Name: payload.name,
+	BillingStreet: payload.billingAddress.street,
+	BillingCity: payload.billingAddress.city,
+	BillingState: payload.billingAddress.state,
+	BillingPostalCode: payload.billingAddress.postalCode,
+	BillingCountry: payload.billingAddress.country,
+	ShippingStreet: payload.shippingAddress.street,
+	ShippingCity: (payload.shippingAddress.city default ""),
+	ShippingState: payload.shippingAddress.state,
+	ShippingPostalCode: payload.shippingAddress.postalCode,
+	ShippingCountry: payload.shippingAddress.country,
+	Phone: payload.phone,
+	Fax: payload.fax,
+	AccountNumber: payload.number,
+	Email__c: payload.email,
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="Account" doc:name="Create" doc:id="2f3e9fad-2773-48f3-a3cc-6e46c3a06a3b" config-ref="Salesforce_Config" />
+		<ee:transform doc:name="response Message" doc:id="64fa4f82-fbe4-4a91-b837-3217acf1bda3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

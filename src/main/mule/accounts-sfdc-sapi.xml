@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+    <flow name="accounts-sfdc-sapi-main" doc:id="49cd3f59-701a-44e0-ab6b-999e2d177844">
+        <http:listener path="/api/*" config-ref="accounts-sfdc-sapi-httpListenerConfig">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="accounts-sfdc-sapi-config" doc:id="3e1cf803-0a75-4965-8d82-ba2242c855cd"/>
+		<error-handler ref="lm-errorhandlerError_Handler" />
+    </flow>
+    <flow name="accounts-sfdc-sapi-console">
+        <http:listener path="/console/*" config-ref="accounts-sfdc-sapi-httpListenerConfig">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="accounts-sfdc-sapi-config"/>
+		<error-handler ref="lm-errorhandlerError_Handler" />
+    </flow>
+    <flow name="put:\accounts\(accountid):application\json:accounts-sfdc-sapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="ecc0610f-1bd6-4dd0-a907-ae4de1501d9f" name="impl-put:\accounts\(accountid):application\json:accounts-sfdc-sapi-config"/>
+		<error-handler ref="lm-errorhandlerError_Handler" />
+    </flow>
+    <flow name="delete:\accounts\(accountid):accounts-sfdc-sapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="8519912b-e23a-4acf-a14e-d46c5d069ca0" name="impl-delete:\accounts\(accountid):accounts-sfdc-sapi-config"/>
+		<error-handler ref="lm-errorhandlerError_Handler" />
+    </flow>
+    <flow name="get:\accounts\(accountid):accounts-sfdc-sapi-config">
+        <flow-ref doc:name="Flow Reference" doc:id="bc071707-ce53-42e3-82ce-5bf819f47b49" name="impl-get:\accounts\(accountid):accounts-sfdc-sapi-config"/>
+		<error-handler ref="lm-errorhandlerError_Handler" />
+    </flow>
+    <flow name="post:\accounts:application\json:accounts-sfdc-sapi-config">
+		<flow-ref doc:name="Flow Reference" doc:id="4903f2b9-3afb-4fc0-b2e1-e9b72df58c17" name="impl-post:\accounts:application\json:accounts-sfdc-sapi-config"/>
+		<error-handler ref="lm-errorhandlerError_Handler" />
+    </flow>
+</mule>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="impl-put:\accounts\(accountid):application\json:accounts-sfdc-sapi-config" doc:id="cea18fef-6140-4534-b4cb-3869294d490d" >
+		<logger level="INFO" doc:name="flow start Logger" doc:id="50f35232-ee6d-4bd6-ab22-7274b1be1ae8" message='#["PUT FLOW STARTED"]'/>
+		<ee:transform doc:name="set variables" doc:id="b70e192f-22a9-4312-9f20-92b1acce80fc" >
+			<ee:variables >
+				<ee:set-variable variableName="accountid" ><![CDATA[attributes.uriParams.'accountid']]></ee:set-variable>
+				<ee:set-variable variableName="getquerydata" ><![CDATA[output application/java
+---
+{
+	accountid__c : vars.accountid,
+	Name : payload.name
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Get data from Salesforce Accounts" doc:id="67649442-c35e-4ce3-ad7f-a03dcf2c8edf" config-ref="Salesforce_Config" target="getAccountsdata">
+			<salesforce:salesforce-query ><![CDATA[select Name,Phone,Fax,Email__c,accountid__c,BillingAddress from Account where Id =':accountid__c' AND Name =':Name']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	accountid__c : vars.accountid,
+	Name : payload.name
+	
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<choice doc:name="Choice" doc:id="ffb6157b-b9ee-4896-89c3-1cd394712f39" >
+			<when expression="#[sizeOf(vars.getAccountsdata)&gt;0]">
+				<ee:transform doc:name="MappingResponse" doc:id="27c51bdc-e003-4490-9dc8-4314585e1822">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: vars.accountid,
+	Name: payload.name,
+	BillingStreet: payload.billingAddress.street,
+	BillingCity: payload.billingAddress.city,
+	BillingState: payload.billingAddress.state,
+	BillingPostalCode: payload.billingAddress.postalCode,
+	BillingCountry: payload.billingAddress.country,
+	ShippingStreet: payload.shippingAddress.street,
+	ShippingCity: (payload.shippingAddress.city default ""),
+	ShippingState: payload.shippingAddress.state,
+	ShippingPostalCode: payload.shippingAddress.postalCode,
+	ShippingCountry: payload.shippingAddress.country,
+	Phone: payload.phone,
+	Fax: payload.fax,
+	AccountNumber: payload.number,
+	Email__c: payload.email
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<salesforce:upsert objectType="Account" externalIdFieldName="Id" doc:name="Upsert data to salesforce Accounts" doc:id="04818114-06b6-423a-9ec7-e5a74fc62435" config-ref="Salesforce_Config" />
+				<ee:transform doc:name="responseMessage" doc:id="c58c9388-37c6-46d7-b10e-d5211713e444">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  id: "0015j00000VNSljAAH",
+  status: 0,
+  message: "Account updated successfully"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="responseMapping" doc:id="ea2ec2ae-e49a-4bcf-b95a-819b41f72212" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"ID": vars.accountid,
+	"Name": vars.getquerydata.Name,
+	"Status": "No Matched Data Found for the above ID and Name"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="responseMessage" doc:id="6690602c-01dd-44f4-95a3-3869301e7ed9" message='#[payload]' />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
